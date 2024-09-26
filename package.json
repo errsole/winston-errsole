@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "Winston transport for logging with Errsole",
   "main": "lib/index.js",
+  "types": "types/index.d.ts",
   "scripts": {
     "test": "jest --coverage",
     "coveralls": "jest --coverage && cat ./coverage/lcov.info | coveralls"
@@ -21,6 +22,10 @@
     "errsole": "^2.10.2",
     "winston-transport": "^4.7.1"
   },
+  "files": [
+    "lib",
+    "types"
+  ],
   "devDependencies": {
     "@jest/globals": "^29.7.0",
     "coveralls": "^3.1.1",

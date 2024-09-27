@@ -1,4 +1,4 @@
-name: Publish to npm
+name: Publish the Winston-Errsole package to npm
 
 on:
   release:
@@ -7,7 +7,7 @@ on:
       - master
 
 jobs:
-  build:
+  test_and_publish:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -20,6 +20,12 @@ jobs:
       # Run tests and generate coverage report
       - run: npm test -- --coverage
         continue-on-error: false
+
+      # Send coverage report to Coveralls
+      - run: npm install coveralls --save-dev
+      - run: cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
+        env:
+          COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_WINSTON_ERRSOLE_TOKEN }}
 
       # Publish the package
       - run: npm publish

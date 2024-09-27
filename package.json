@@ -1,7 +1,7 @@
 {
-  "name": "errsole-winston",
+  "name": "winston-errsole",
   "version": "0.0.1",
-  "description": "Winston transport for logging with Errsole",
+  "description": "Winston transport",
   "main": "lib/index.js",
   "types": "types/index.d.ts",
   "scripts": {

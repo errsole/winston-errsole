@@ -1,5 +1,5 @@
 const Transport = require('winston-transport');
-const ErrsoleWinston = require('../lib/index');
+const WinstonErrsole = require('../lib/index');
 const errsole = require('errsole');
 /* globals expect, jest, beforeEach, it, describe,  afterEach */
 
@@ -16,7 +16,7 @@ jest.mock('errsole', () => ({
   }))
 }));
 
-describe('ErrsoleWinston Transport', () => {
+describe('WinstonErrsole Transport', () => {
   let transport;
   let originalConsoleError;
 
@@ -31,8 +31,7 @@ describe('ErrsoleWinston Transport', () => {
     console.error = jest.fn();
 
     // Initialize transport
-    transport = new ErrsoleWinston();
-    emitMock = jest.spyOn(transport, 'emit');
+    transport = new WinstonErrsole();
   });
 
   afterEach(() => {
@@ -59,7 +58,7 @@ describe('ErrsoleWinston Transport', () => {
   });
 });
 
-describe('ErrsoleWinston Transport - log function', () => {
+describe('WinstonErrsole Transport - log function', () => {
   let transport;
   let emitMock;
   let originalConsoleError;
@@ -75,7 +74,7 @@ describe('ErrsoleWinston Transport - log function', () => {
     console.error = jest.fn();
 
     // Initialize transport
-    transport = new ErrsoleWinston();
+    transport = new WinstonErrsole();
     emitMock = jest.spyOn(transport, 'emit');
   });
 

@@ -1,4 +1,4 @@
-declare module 'errsole-winston' {
+declare module 'winston-errsole' {
   import TransportStream from 'winston-transport';
 
   interface Log {
@@ -7,7 +7,7 @@ declare module 'errsole-winston' {
     meta?: Record<string, any>;
   }
 
-  class ErrsoleWinston extends TransportStream {
+  class WinstonErrsole extends TransportStream {
     private levelMapping: Record<string, string>;  
 
     constructor(options?: TransportStream.TransportStreamOptions); 
@@ -20,5 +20,5 @@ declare module 'errsole-winston' {
     log(logInfo: Log, callback?: () => void): void;
   }
 
-  export default ErrsoleWinston;
+  export default WinstonErrsole;
 }

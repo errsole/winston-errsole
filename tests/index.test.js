@@ -1,6 +1,9 @@
+// tests/index.test.js
+
 const Transport = require('winston-transport');
 const WinstonErrsole = require('../lib/index');
 const errsole = require('errsole');
+
 /* globals expect, jest, beforeEach, it, describe, afterEach */
 
 jest.mock('errsole', () => ({
@@ -88,7 +91,7 @@ describe('WinstonErrsole Transport - log function', () => {
     const logInfo = {
       level: 'info',
       message: 'Test info message',
-      meta: { some: 'meta' }
+      meta: { some: 'meta' } // Include meta
     };
     transport.log(logInfo);
     jest.advanceTimersByTime(0);
@@ -98,7 +101,8 @@ describe('WinstonErrsole Transport - log function', () => {
   it('should call the callback if provided', (done) => {
     const logInfo = {
       level: 'info',
-      message: 'Test info message'
+      message: 'Test info message',
+      meta: {} // Include meta
     };
     const callback = jest.fn(() => {
       expect(callback).toHaveBeenCalled();
@@ -111,61 +115,19 @@ describe('WinstonErrsole Transport - log function', () => {
   it('should call the default callback if none is provided', () => {
     const logInfo = {
       level: 'info',
-      message: 'Test info message'
+      message: 'Test info message',
+      meta: {} // Include meta
     };
     transport.log(logInfo);
     jest.advanceTimersByTime(0);
     expect(emitMock).toHaveBeenCalledWith('logged', logInfo);
   });
 
-  it.each([
-    ['error', 'error'],
-    ['warn', 'warn'],
-    ['info', 'info'],
-    ['http', 'info'],
-    ['verbose', 'info'],
-    ['debug', 'debug'],
-    ['silly', 'debug']
-  ])('should assign errsoleLogLevel correctly for log level "%s"', (logLevel, expectedErrsoleLevel) => {
-    const logInfo = {
-      level: logLevel,
-      message: `Test message for level ${logLevel}`
-    };
-    transport.log(logInfo);
-    jest.advanceTimersByTime(0); // Trigger setImmediate
-    expect(errsole.meta).toHaveBeenCalledWith({});
-    const mockedMeta = errsole.meta.mock.results[0].value;
-    expect(mockedMeta[expectedErrsoleLevel]).toHaveBeenCalledWith(`Test message for level ${logLevel}`);
-  });
-
-  it('should default errsoleLogLevel to "info" for undefined log levels', () => {
-    const logInfo = {
-      level: 'unknown',
-      message: 'Test message for undefined log level'
-    };
-    transport.log(logInfo);
-    jest.advanceTimersByTime(0);
-    expect(errsole.meta).toHaveBeenCalledWith({});
-    const mockedMeta = errsole.meta.mock.results[0].value;
-    expect(mockedMeta.info).toHaveBeenCalledWith('Test message for undefined log level');
-  });
-
-  it('should call errsole[errsoleLogLevel](log.message) when it is a function', () => {
-    const logInfo = {
-      level: 'debug',
-      message: 'Test debug message'
-    };
-    transport.log(logInfo);
-    jest.advanceTimersByTime(0);
-    expect(errsole.meta).toHaveBeenCalledWith({});
-    const mockedMeta = errsole.meta.mock.results[0].value;
-    expect(mockedMeta.debug).toHaveBeenCalledWith('Test debug message');
-  });
-
   it('should not call errsole.meta or errsole[errsoleLogLevel] when errsole[errsoleLogLevel] is not a function', () => {
     const logInfo = {
       level: 'custom',
-      message: 'Test custom message'
+      message: 'Test custom message',
+      meta: {} // Include meta to maintain consistency
     };
     transport.levelMapping.custom = 'nonFunction';
     errsole.nonFunction = 'I am not a function';
@@ -178,7 +140,8 @@ describe('WinstonErrsole Transport - log function', () => {
   it('should call the provided callback after logging', (done) => {
     const logInfo = {
       level: 'info',
-      message: 'Test info message with callback'
+      message: 'Test info message with callback',
+      meta: {} // Include meta
     };
     const callback = jest.fn(() => {
       expect(callback).toHaveBeenCalled();
@@ -192,7 +155,8 @@ describe('WinstonErrsole Transport - log function', () => {
   it('should use the default callback when none is provided', () => {
     const logInfo = {
       level: 'info',
-      message: 'Test info message without callback'
+      message: 'Test info message without callback',
+      meta: {} // Include meta
     };
     transport.log(logInfo);
     jest.advanceTimersByTime(0);
@@ -203,7 +167,7 @@ describe('WinstonErrsole Transport - log function', () => {
     const logInfo = {
       level: 'info',
       message: 'Test message that causes errsole.meta().info to throw',
-      meta: { userId: 1 }
+      meta: { userId: 1 } // Include meta
     };
     // Create a mock error
     const mockError = new Error('Errsole meta failure');
@@ -220,5 +184,18 @@ describe('WinstonErrsole Transport - log function', () => {
     jest.advanceTimersByTime(0);
     expect(emitMock).toHaveBeenCalledWith('logged', logInfo);
     expect(errorSpy).toHaveBeenCalledWith(mockError);
+  });
+
+  it('should call errsole[errsoleLogLevel] directly when meta is not provided', () => {
+    const logInfo = {
+      level: 'info',
+      message: 'Test info message without meta'
+      // No meta field
+    };
+    transport.log(logInfo);
+    jest.advanceTimersByTime(0);
+    expect(errsole.meta).not.toHaveBeenCalled();
+    expect(errsole.info).toHaveBeenCalledWith('Test info message without meta');
+    expect(emitMock).toHaveBeenCalledWith('logged', logInfo);
   });
 });

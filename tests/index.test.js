@@ -1,7 +1,7 @@
 const Transport = require('winston-transport');
 const WinstonErrsole = require('../lib/index');
 const errsole = require('errsole');
-/* globals expect, jest, beforeEach, it, describe,  afterEach */
+/* globals expect, jest, beforeEach, it, describe, afterEach */
 
 jest.mock('errsole', () => ({
   error: jest.fn(),
@@ -133,7 +133,7 @@ describe('WinstonErrsole Transport - log function', () => {
     };
     transport.log(logInfo);
     jest.advanceTimersByTime(0); // Trigger setImmediate
-    expect(errsole.meta).toHaveBeenCalledWith('{}');
+    expect(errsole.meta).toHaveBeenCalledWith({});
     const mockedMeta = errsole.meta.mock.results[0].value;
     expect(mockedMeta[expectedErrsoleLevel]).toHaveBeenCalledWith(`Test message for level ${logLevel}`);
   });
@@ -145,7 +145,7 @@ describe('WinstonErrsole Transport - log function', () => {
     };
     transport.log(logInfo);
     jest.advanceTimersByTime(0);
-    expect(errsole.meta).toHaveBeenCalledWith('{}');
+    expect(errsole.meta).toHaveBeenCalledWith({});
     const mockedMeta = errsole.meta.mock.results[0].value;
     expect(mockedMeta.info).toHaveBeenCalledWith('Test message for undefined log level');
   });
@@ -157,7 +157,7 @@ describe('WinstonErrsole Transport - log function', () => {
     };
     transport.log(logInfo);
     jest.advanceTimersByTime(0);
-    expect(errsole.meta).toHaveBeenCalledWith('{}');
+    expect(errsole.meta).toHaveBeenCalledWith({});
     const mockedMeta = errsole.meta.mock.results[0].value;
     expect(mockedMeta.debug).toHaveBeenCalledWith('Test debug message');
   });
@@ -197,48 +197,6 @@ describe('WinstonErrsole Transport - log function', () => {
     transport.log(logInfo);
     jest.advanceTimersByTime(0);
     expect(emitMock).toHaveBeenCalledWith('logged', logInfo);
-  });
-
-  it('should call errsole[errsoleLogLevel] directly when log.meta is falsy', () => {
-    const originalJSONStringify = JSON.stringify;
-    const stringifyMock = jest.spyOn(JSON, 'stringify').mockImplementation((obj) => {
-      if (Object.keys(obj).length === 0) return '';
-      return originalJSONStringify(obj);
-    });
-    const logInfo = {
-      level: 'info',
-      message: 'Test info message without meta'
-    };
-    transport.log(logInfo);
-    jest.advanceTimersByTime(0);
-    expect(errsole.meta).not.toHaveBeenCalled();
-    expect(errsole.info).toHaveBeenCalledWith('Test info message without meta');
-    stringifyMock.mockRestore();
-  });
-
-  it.each([
-    ['error', 'error'],
-    ['warn', 'warn'],
-    ['info', 'info'],
-    ['http', 'info'],
-    ['verbose', 'info'],
-    ['debug', 'debug'],
-    ['silly', 'debug']
-  ])('should call errsole["%s"] directly when log.meta is falsy', (logLevel, errsoleMethod) => {
-    const originalJSONStringify = JSON.stringify;
-    const stringifyMock = jest.spyOn(JSON, 'stringify').mockImplementation((obj) => {
-      if (Object.keys(obj).length === 0) return '';
-      return originalJSONStringify(obj);
-    });
-    const logInfo = {
-      level: logLevel,
-      message: `Test message for level ${logLevel}`
-    };
-    transport.log(logInfo);
-    jest.advanceTimersByTime(0);
-    expect(errsole.meta).not.toHaveBeenCalled();
-    expect(errsole[errsoleMethod]).toHaveBeenCalledWith(`Test message for level ${logLevel}`);
-    stringifyMock.mockRestore();
   });
 
   it('should emit "error" event if errsole.meta()[errsoleLogLevel] throws an error', () => {

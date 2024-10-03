@@ -1,4 +1,5 @@
 # winston-errsole
+<a href="https://coveralls.io/github/errsole/winston-errsole"><img src="https://coveralls.io/repos/github/errsole/winston-errsole/badge.svg" alt="Coverage Status" /></a>
 
 A transport plugin for integrating Errsole with the winston@3.x logger.
 

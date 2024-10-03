@@ -1,7 +1,7 @@
 {
   "name": "winston-errsole",
-  "version": "0.0.1",
-  "description": "Winston transport",
+  "version": "1.0.0",
+  "description": "Errsole transport plugin for Winston",
   "main": "lib/index.js",
   "types": "types/index.d.ts",
   "scripts": {

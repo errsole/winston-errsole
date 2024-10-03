@@ -46,8 +46,8 @@ describe('WinstonErrsole Transport', () => {
     expect(transport).toBeInstanceOf(Transport);
   });
 
-  it('should initialize with default levelMapping', () => {
-    expect(transport.levelMapping).toEqual({
+  it('should initialize with default logLevelMapping', () => {
+    expect(transport.logLevelMapping).toEqual({
       error: 'error',
       warn: 'warn',
       info: 'info',
@@ -174,7 +174,7 @@ describe('WinstonErrsole Transport - log function', () => {
       message: 'Test custom message',
       meta: {}
     };
-    transport.levelMapping.custom = 'nonFunction';
+    transport.logLevelMapping.custom = 'nonFunction';
     errsole.nonFunction = 'I am not a function';
     transport.log(logInfo);
     jest.advanceTimersByTime(0);

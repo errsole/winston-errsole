@@ -8,7 +8,7 @@ declare module 'winston-errsole' {
   }
 
   class WinstonErrsole extends TransportStream {
-    private levelMapping: Record<string, string>;  
+    private logLevelMapping: Record<string, string>;  
 
     constructor(options?: TransportStream.TransportStreamOptions); 
 
